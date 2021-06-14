@@ -38,7 +38,7 @@ def check_version_date(filename: str) -> int:
         for line in fh.read().split('\n'):
             if re.match(pattern, line):
                 match = re.search(pattern, line)
-                version_date = match.groupdict().get('date')
+                version_date = match.group('date')
                 if version_date:
                     version_date = version_date.strip('(').strip(')')
                 current_date = f'{str(datetime.date(datetime.now()))}'
