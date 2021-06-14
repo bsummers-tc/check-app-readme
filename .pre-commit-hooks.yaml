@@ -1,0 +1,8 @@
+- id: check-app-readme
+  always_run: true
+  description: Check date and any other issues with App README.md file before commit.
+  entry: check-app-readme
+  files: 'README.md'
+  language: python
+  name: Fix App README.md
+  pass_filenames: false
