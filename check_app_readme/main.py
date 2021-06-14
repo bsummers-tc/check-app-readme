@@ -33,13 +33,15 @@ def check_branch(branches: list) -> bool:
 def check_version_date(filename: str) -> int:
     """Fix the date on the latest version."""
     ij_version = get_app_version()
-    pattern = rf'^#{{1,3}}\s?{ij_version}\s?'
+    pattern = rf'^(?:#{{1,3}}\s?)(?:{ij_version}\s?)(?P<date>.*)'
     with open(filename, 'r+') as fh:
         for line in fh.read().split('\n'):
             if re.match(pattern, line):
-                _, _, version_date = line.split(' ', maxsplit=3)
+                match = re.search(pattern, line)
+                version_date = match.groupdict().get('date')
+                if version_date:
+                    version_date = version_date.strip('(').strip(')')
                 current_date = f'{str(datetime.date(datetime.now()))}'
-                version_date = version_date.strip('(').strip(')')
 
                 # check that the date on the latest version is today
                 if current_date != version_date:
