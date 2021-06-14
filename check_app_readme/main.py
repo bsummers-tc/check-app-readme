@@ -1,9 +1,14 @@
 """Fix README.md"""
 # standard library
+import argparse
 import json
 import re
 import sys
 from datetime import datetime
+from typing import Optional, Sequence
+
+# third-party
+import sh
 
 
 def get_app_version() -> str:
@@ -15,6 +20,14 @@ def get_app_version() -> str:
     except Exception:
         print('Failed to get install.json programVersion data.')
         sys.exit(1)
+
+
+def check_branch(branches: list) -> bool:
+    """Ensure the current branch is in list of provided branches."""
+    current_branch = sh.git(['-C', '.', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
+    if current_branch in branches:
+        return True
+    return False
 
 
 def check_version_date(filename: str) -> int:
@@ -45,9 +58,16 @@ def check_version_date(filename: str) -> int:
     return 0
 
 
-def main():
+def main(argv: Optional[Sequence[str]] = None):
     """Entry point for pre-commit hook."""
-    return check_version_date('README.md')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--branches', action='append', default=[])
+    args = parser.parse_args(argv)
+
+    retval = 0
+    if check_branch(args.branches) is True:
+        retval = check_version_date('README.md')
+    return retval
 
 
 if __name__ == '__main__':
