@@ -4,5 +4,5 @@
   entry: check-app-readme
   files: 'README.md'
   language: python
-  name: Fix App README.md
+  name: Check App README.md
   pass_filenames: false
