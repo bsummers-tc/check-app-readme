@@ -27,6 +27,10 @@ def check_branch(branches: list) -> bool:
     current_branch = sh.git(['-C', '.', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
     if current_branch in branches:
         return True
+
+    # verbose output
+    print(f'Current Branch:   {current_branch}')
+    print(f'Enabled Branches: {branches}')
     return False
 
 
@@ -43,10 +47,16 @@ def check_version_date(filename: str) -> int:
                     version_date = version_date.strip('(').strip(')')
                 current_date = f'{str(datetime.date(datetime.now()))}'
 
+                # verbose output
+                print(f'Matched Line:     {line}')
+                print(f'IJ Version:       {ij_version}')
+                print(f'Readme Date:      {version_date}')
+                print(f'Current Date:     {current_date}')
+
                 # check that the date on the latest version is today
                 if current_date != version_date:
                     print(
-                        f'The {filename} file has the wrong date ({version_date} '
+                        f'\nThe {filename} file has the wrong date ({version_date} '
                         f'-> {current_date}) for version {ij_version}.'
                     )
                     return 1
@@ -54,7 +64,7 @@ def check_version_date(filename: str) -> int:
                 # entry found and no issues
                 break
         else:
-            print(f'No release notes found for the current version ({ij_version}).')
+            print(f'\nNo release notes found for the current version ({ij_version}).')
             return 1
 
     return 0
@@ -62,12 +72,14 @@ def check_version_date(filename: str) -> int:
 
 def main(argv: Optional[Sequence[str]] = None):
     """Entry point for pre-commit hook."""
+    print('argv', argv)
     parser = argparse.ArgumentParser()
     parser.add_argument('--branches', action='append', default=[])
     args = parser.parse_args(argv)
 
     retval = 0
-    if check_branch(args.branches) is True:
+    # if check_branch(args.branches) is True:
+    if True:
         retval = check_version_date('README.md')
     return retval
 
