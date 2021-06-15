@@ -72,14 +72,12 @@ def check_version_date(filename: str) -> int:
 
 def main(argv: Optional[Sequence[str]] = None):
     """Entry point for pre-commit hook."""
-    print('argv', argv)
     parser = argparse.ArgumentParser()
     parser.add_argument('--branches', action='append', default=[])
     args = parser.parse_args(argv)
 
     retval = 0
-    # if check_branch(args.branches) is True:
-    if True:
+    if check_branch(args.branches) is True:
         retval = check_version_date('README.md')
     return retval
 
