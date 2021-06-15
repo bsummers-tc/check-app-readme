@@ -2,6 +2,7 @@
 # standard library
 import argparse
 import json
+import os
 import re
 import sys
 from datetime import datetime
@@ -25,12 +26,16 @@ def get_app_version() -> str:
 def check_branch(branches: list) -> bool:
     """Ensure the current branch is in list of provided branches."""
     current_branch = sh.git(['-C', '.', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
-    if current_branch in branches:
-        return True
+    if current_branch == 'HEAD':  # in ci/cd
+        # CI_COMMIT_REF_NAME = other option for branch
+        current_branch = os.getenv('CI_COMMIT_BRANCH')
 
     # verbose output
     print(f'Current Branch:   {current_branch}')
     print(f'Enabled Branches: {branches}')
+
+    if current_branch in branches:
+        return True
     return False
 
 
